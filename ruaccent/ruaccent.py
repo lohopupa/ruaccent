@@ -64,7 +64,8 @@ class RUAccent:
             join_path(self.workdir, "dictionary")
         ):
             for path in self.accentuator_paths:
-                files = self.fs.ls(repo + path)
+                _local = pathlib.Path(self.workdir + path)
+                files = [{"name": f.name, "type": "file" if f.is_file() else "directory"} for f in _local.iterdir()] if _local.exists() else []
                 for file in files:
                     if file["type"] == "file":
                         hf_hub_download(repo_id=repo, local_dir_use_symlinks=False, local_dir=self.workdir, filename=file['name'].replace(repo+'/', ''))
@@ -75,13 +76,15 @@ class RUAccent:
         if not os.path.exists(join_path(self.workdir, "nn", "nn_omograph", omograph_model_size)):
             model_path = self.omograph_models_paths.get(omograph_model_size, None)
             if model_path:
-                files = self.fs.ls(repo + model_path)
+                _local = pathlib.Path(self.workdir + model_path)
+                files = [{"name": f.name, "type": "file" if f.is_file() else "directory"} for f in _local.iterdir()] if _local.exists() else []
                 for file in files:
                     if file["type"] == "file":
                         hf_hub_download(repo_id=repo, local_dir_use_symlinks=False, local_dir=self.workdir, filename=file['name'].replace(repo+'/', ''))
         if not os.path.exists(join_path(self.module_path, "koziev")):
           for path in self.koziev_paths:
-               files = self.fs.ls(repo + path)
+               _local = pathlib.Path(self.workdir + path)
+               files = [{"name": f.name, "type": "file" if f.is_file() else "directory"} for f in _local.iterdir()] if _local.exists() else []
                for file in files:
                    if file["type"] == "file":
                        hf_hub_download(repo_id=repo, local_dir_use_symlinks=False, local_dir=self.module_path, filename=file['name'].replace(repo+'/', ''))
